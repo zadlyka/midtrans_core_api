@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { TypeOrmExceptionFilter } from './common/filters/typeorm-exception.filter';
 import { PgExceptionFilter } from './common/filters/pg-exception.filter';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,6 +25,7 @@ async function bootstrap() {
     new TypeOrmExceptionFilter(httpAdapter),
     new PgExceptionFilter(httpAdapter),
   );
-  await app.listen(3000);
+
+  await app.listen(app.get(ConfigService).get('port'));
 }
 bootstrap();

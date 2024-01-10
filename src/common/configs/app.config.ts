@@ -4,6 +4,7 @@ dotenvConfig({ path: '.env' });
 
 const appConfig = () => {
   return {
+    port: parseInt(process.env.PORT, 10) || 5000,
     database: {
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',
