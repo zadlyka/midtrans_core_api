@@ -1,14 +1,11 @@
+import * as crypto from 'crypto';
+import * as midtransClient from 'midtrans-client';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { ConfigService } from '@nestjs/config';
-import * as midtransClient from 'midtrans-client';
 import { MidtransNotifyDto } from './dto/midtrans-notify.dto';
 import { OrderStatus } from './enums/order-status.enum';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const SHA512 = require('crypto-js/sha512');
-
 @Injectable()
 export class MidtransService {
   credentials: any;
@@ -58,20 +55,10 @@ export class MidtransService {
   }
 
   notify(midtransNotifyDto: MidtransNotifyDto) {
-    const {
-      order_id,
-      status_code,
-      gross_amount,
-      transaction_status,
-      fraud_status,
-      signature_key,
-    } = midtransNotifyDto;
+    const { order_id, transaction_status, fraud_status } = midtransNotifyDto;
 
-    const hash = SHA512(
-      order_id + status_code + gross_amount + this.credentials.serverKey,
-    );
-
-    if (hash !== signature_key) throw new BadRequestException();
+    const isVerify = this.validateSignatureKey(midtransNotifyDto);
+    if (!isVerify) throw new BadRequestException();
 
     let status = null;
 
@@ -92,5 +79,18 @@ export class MidtransService {
     }
 
     return this.orderService.updateStatus(order_id, status);
+  }
+
+  private validateSignatureKey(midtransNotifyDto: MidtransNotifyDto) {
+    const { order_id, status_code, gross_amount, signature_key } =
+      midtransNotifyDto;
+    const serverKey = this.credentials.serverKey;
+    const key = order_id + status_code + gross_amount + serverKey;
+
+    const result = crypto.createHash('sha512').update(key).digest();
+    if (signature_key === result.toString('hex')) {
+      return true;
+    }
+    return false;
   }
 }
