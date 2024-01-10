@@ -10,6 +10,7 @@ import { RoleModule } from './role/role.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthGuard } from './auth/auth.guard';
 import { WrapInterceptor } from './common/interceptors/wrap.interceptor';
+import { OrderModule } from './order/order.module';
 import appConfig from './common/configs/app.config';
 
 @Module({
@@ -35,6 +36,7 @@ import appConfig from './common/configs/app.config';
     UserModule,
     RoleModule,
     AuthModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [

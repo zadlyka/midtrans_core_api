@@ -22,6 +22,14 @@ const appConfig = () => {
       ttl: parseInt(process.env.JWT_TTL, 10) || 600,
       refreshTtl: parseInt(process.env.JWT_REFRESH_TTL, 10) || 2592000,
     },
+    gateway: {
+      midtrans: {
+        isProduction:
+          process.env.MIDTRANS_IS_PRODUCTION === 'true' ? true : false,
+        serverKey: process.env.MIDTRANS_SERVER_KEY,
+        clientKey: process.env.MIDTRANS_CLIENT_KEY,
+      },
+    },
   };
 };
 

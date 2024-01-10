@@ -12,4 +12,10 @@ export enum Permission {
   ReadUser = 202,
   UpdateUser = 203,
   DeleteUser = 204,
+
+  ManageOrder = 300,
+  CreateOrder = 301,
+  ReadOrder = 302,
+  UpdateOrder = 303,
+  DeleteOrder = 304,
 }
